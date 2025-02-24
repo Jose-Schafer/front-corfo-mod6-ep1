@@ -7,11 +7,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-import { useDoctors } from "@/providers/DoctorsContext"
+import { useDoctors } from "@/providers/DoctorsContext";
 
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
 export default function AppointmentsTable({ appointments }) {
   const { doctors } = useDoctors();
@@ -21,7 +21,7 @@ export default function AppointmentsTable({ appointments }) {
       const doctor = doctors[appointment.doctorId];
       return doctor ? total + doctor.hour_price : total;
     }, 0);
-    return formatMoney(total)
+    return formatMoney(total);
   };
 
   const formatMoney = (value) => {
@@ -29,6 +29,14 @@ export default function AppointmentsTable({ appointments }) {
       style: "currency",
       currency: "CLP",
     }).format(value);
+  };
+
+  if (!appointments) {
+    return (
+      <div className="mt-10">
+        <h2>No hay citas médicas agendadas.</h2>
+      </div>
+    );
   }
 
   return (
@@ -45,10 +53,14 @@ export default function AppointmentsTable({ appointments }) {
       <TableBody>
         {appointments.map((appointment, index) => (
           <TableRow key={index}>
-            <TableCell className="font-medium">{appointment.schedule}</TableCell>
+            <TableCell className="font-medium">
+              {appointment.schedule}
+            </TableCell>
             <TableCell>{doctors[appointment.doctorId]?.name}</TableCell>
             <TableCell>{appointment.name}</TableCell>
-            <TableCell className="text-right">{formatMoney(doctors[appointment.doctorId]?.hour_price)}</TableCell>
+            <TableCell className="text-right">
+              {formatMoney(doctors[appointment.doctorId]?.hour_price)}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -59,7 +71,7 @@ export default function AppointmentsTable({ appointments }) {
         </TableRow>
       </TableFooter>
     </Table>
-  )
+  );
 }
 
 AppointmentsTable.propTypes = {
@@ -69,5 +81,6 @@ AppointmentsTable.propTypes = {
       email: PropTypes.string.isRequired,
       doctorId: PropTypes.string.isRequired,
       schedule: PropTypes.string.isRequired,
-    }))
+    }),
+  ),
 };
