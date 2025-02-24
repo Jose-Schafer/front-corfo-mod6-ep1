@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router'
-import { Input } from "@/components/ui/input"
-import { useAuth } from '@/providers/AuthContext';
-import { setCookie, getCookie } from '@/lib/cookies';
-import { encrypt, decrypt } from '@/lib/encription';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/providers/AuthContext";
+import { setCookie, getCookie } from "@/lib/cookies";
+import { encrypt, decrypt } from "@/lib/encription";
+import { jwtDecode } from "jwt-decode";
 
-import { mockPostUserLogin } from '@/mocks/login'
+import { mockPostUserLogin } from "@/mocks/login";
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { setUser } = useAuth()
+  const { setUser } = useAuth();
 
   const handleLogin = () => {
-    const token = mockPostUserLogin(username, password)
-    setCookie("auth-token", encrypt(token))
+    const token = mockPostUserLogin(username, password);
+    setCookie("auth-token", encrypt(token));
 
     const decodedToken = jwtDecode(token);
-    const { name, role } = { ...decodedToken }
-    setUser({ name, role })
-    alert('Login successful!');
+    const { name, role } = { ...decodedToken };
+    setUser({ name, role });
+    alert("Login successful!");
     navigate("/");
   };
-
 
   return (
     <div className="min-h-screen w-screen flex justify-center items-center bg-gray-100">
@@ -34,7 +33,9 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         <div className="mb-4">
-          <label htmlFor="username" className="block text-sm font-semibold">Username</label>
+          <label htmlFor="username" className="block text-sm font-semibold">
+            Username
+          </label>
           <Input
             type="text"
             id="username"
@@ -45,7 +46,9 @@ export default function Login() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-semibold">Password</label>
+          <label htmlFor="password" className="block text-sm font-semibold">
+            Password
+          </label>
           <Input
             type="password"
             id="password"
@@ -64,4 +67,4 @@ export default function Login() {
       </div>
     </div>
   );
-};
+}
