@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import { ReactNode, ComponentType, useState, FC } from "react";
 import ReactDOM from "react-dom";
 
-const Modal = ({ children, onClose }) => {
+interface ModalProps {
+  children: ReactNode;
+  onClose: () => void;
+}
+
+interface WithModalProps {
+  openModal: (content: ReactNode) => void;
+}
+
+const Modal: FC<ModalProps> = ({ children, onClose }) => {
   const modalRoot = document.getElementById("modal-root");
   if (!modalRoot) {
     throw new Error("No modal-root element found in the DOM");
@@ -19,17 +28,18 @@ const Modal = ({ children, onClose }) => {
         {children}
       </div>
     </div>,
-    modalRoot
+    modalRoot,
   );
 };
 
-
-const withModal = (WrappedComponent) => {
-  return function WithModal(props) {
+const withModal = <P extends object>(
+  WrappedComponent: ComponentType<P & WithModalProps>,
+): FC<P> => {
+  return function WithModal(props: P) {
     const [isModalOpen, setModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState(null);
+    const [modalContent, setModalContent] = useState<ReactNode | null>(null);
 
-    const openModal = (content) => {
+    const openModal = (content: ReactNode) => {
       setModalContent(content);
       setModalOpen(true);
     };
@@ -42,11 +52,7 @@ const withModal = (WrappedComponent) => {
     return (
       <>
         <WrappedComponent {...props} openModal={openModal} />
-        {isModalOpen && (
-          <Modal onClose={closeModal}>
-            {modalContent}
-          </Modal>
-        )}
+        {isModalOpen && <Modal onClose={closeModal}>{modalContent}</Modal>}
       </>
     );
   };
